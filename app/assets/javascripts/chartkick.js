@@ -26,6 +26,10 @@
     return !isFunction(variable) && variable instanceof Object;
   }
 
+  function isFunctionString(variable) {
+    return (typeof variable == "string") && variable.substr(0, 8) == "function";
+  }
+
   // https://github.com/madrobby/zepto/blob/master/src/zepto.js
   function extend(target, source) {
     var key;
@@ -38,6 +42,9 @@
           target[key] = [];
         }
         extend(target[key], source[key]);
+      }
+      else if (isFunctionString(source[key])){
+        target[key] = eval('(' + source[key] + ')');
       }
       else if (source[key] !== undefined) {
         target[key] = source[key];
