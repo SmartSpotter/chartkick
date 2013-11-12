@@ -217,7 +217,8 @@
       }
       var options = jsOptions(series, opts, chartOptions), data, i, j;
       options.xAxis.type = "datetime";
-      options.chart.type = chartType;
+      if (!options.chart.type)
+        options.chart.type = chartType;
       options.chart.renderTo = element.id;
 
       for (i = 0; i < series.length; i++) {
@@ -245,7 +246,8 @@
     renderColumnChart = function(element, series, opts, chartType) {
       chartType = chartType || "column";
       var options = jsOptions(series, opts), i, j, s, d, rows = [];
-      options.chart.type = chartType;
+      if (!options.chart.type)
+        options.chart.type = chartType;
       options.chart.renderTo = element.id;
 
       for (i = 0; i < series.length; i++) {
