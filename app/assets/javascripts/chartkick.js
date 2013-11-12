@@ -216,15 +216,18 @@
         };
       }
       var options = jsOptions(series, opts, chartOptions), data, i, j;
-      options.xAxis.type = "datetime";
-      if (!options.chart.type)
+      if (!options.xAxis || !options.xAxis.type)
+        options.xAxis.type = "datetime";
+      if (!options.chart || !options.chart.type)
         options.chart.type = chartType;
       options.chart.renderTo = element.id;
 
       for (i = 0; i < series.length; i++) {
         data = series[i].data;
-        for (j = 0; j < data.length; j++) {
-          data[j][0] = data[j][0].getTime();
+        if (options.xAxis.type == "datetime"){
+          for (j = 0; j < data.length; j++) {
+            data[j][0] = data[j][0].getTime();
+          }
         }
         series[i].marker = {symbol: "circle"};
       }
@@ -246,7 +249,7 @@
     renderColumnChart = function(element, series, opts, chartType) {
       chartType = chartType || "column";
       var options = jsOptions(series, opts), i, j, s, d, rows = [];
-      if (!options.chart.type)
+      if (!options.chart || !options.chart.type)
         options.chart.type = chartType;
       options.chart.renderTo = element.id;
 
@@ -283,7 +286,6 @@
         });
       }
       options.series = newSeries;
-
       new Highcharts.Chart(options);
     };
 
@@ -598,12 +600,15 @@
     }
 
     // right format
+    var isContinuous = (opts && opts.library && opts.library.xAxis && 
+      (opts.library.xAxis.type == 'linear' || opts.library.xAxis.type == 'logarithmic'));
+
     for (i = 0; i < series.length; i++) {
       data = toArr(series[i].data);
       r = [];
       for (j = 0; j < data.length; j++) {
         key = data[j][0];
-        key = time ? toDate(key) : toStr(key);
+        key = time ? toDate(key) : (isContinuous ? toFloat(key) : toStr(key));
         r.push([key, toFloat(data[j][1])]);
       }
       if (time) {
@@ -616,7 +621,8 @@
   }
 
   function processLineData(element, data, opts) {
-    renderLineChart(element, processSeries(data, opts, true), opts);
+    var time = (opts && opts.library && opts.library.xAxis && opts.library.xAxis.type != 'datetime') ? false : true;
+    renderLineChart(element, processSeries(data, opts, time), opts);
   }
 
   function processColumnData(element, data, opts) {
