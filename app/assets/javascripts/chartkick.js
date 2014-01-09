@@ -12,6 +12,11 @@
 (function() {
   'use strict';
 
+  // settings
+  var settings = {
+    valueLabel: 'Aantal'
+  };
+
   // helpers
 
   function isArray(variable) {
@@ -240,7 +245,7 @@
       options.chart.renderTo = element.id;
       options.series = [{
         type: "pie",
-        name: "Value",
+        name: settings.valueLabel,
         data: series
       }];
       new Highcharts.Chart(options);
@@ -441,7 +446,7 @@
 
         var data = new google.visualization.DataTable();
         data.addColumn("string", "");
-        data.addColumn("number", "Value");
+        data.addColumn("number", settings.valueLabel);
         data.addRows(series);
 
         var chart = new google.visualization.PieChart(element);
@@ -593,7 +598,7 @@
 
     // see if one series or multiple
     if (!isArray(series) || typeof series[0] !== "object" || isArray(series[0])) {
-      series = [{name: "Value", data: series}];
+      series = [{name: settings.valueLabel, data: series}];
       opts.hideLegend = true;
     } else {
       opts.hideLegend = false;
@@ -669,6 +674,9 @@
     },
     AreaChart: function(element, dataSource, opts) {
       setElement(element, dataSource, opts, processAreaData);
+    },
+    updateSettings: function(obj){
+       extend(settings, obj);
     }
   };
 
