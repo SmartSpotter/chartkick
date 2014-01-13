@@ -49,7 +49,7 @@
         extend(target[key], source[key]);
       }
       else if (isFunctionString(source[key])){
-        target[key] = eval('(' + source[key] + ')');
+        target[key] = eval("(function() {return " + source[key] + ";})()");
       }
       else if (source[key] !== undefined) {
         target[key] = source[key];
