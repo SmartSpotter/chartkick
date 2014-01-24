@@ -231,7 +231,7 @@
         data = series[i].data;
         if (options.xAxis.type == "datetime"){
           for (j = 0; j < data.length; j++) {
-            if (typeof data[j] === 'object'){
+            if (typeof data[j] === 'object' && data[j].x !== undefined){
               data[j].x = data[j].x.getTime();
             }else{
               data[j][0] = data[j][0].getTime();
@@ -594,7 +594,7 @@
   // process data
 
   function sortByTime(a, b) {
-    if (typeof a === 'object'){
+    if (typeof a === 'object'  && a.x !== undefined){
       return a.x.getTime() - b.x.getTime();
     }
     return a[0].getTime() - b[0].getTime();
