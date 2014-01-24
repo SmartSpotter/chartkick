@@ -231,7 +231,11 @@
         data = series[i].data;
         if (options.xAxis.type == "datetime"){
           for (j = 0; j < data.length; j++) {
-            data[j][0] = data[j][0].getTime();
+            if (typeof data[j] === 'object'){
+              data[j].x = data[j].x.getTime();
+            }else{
+              data[j][0] = data[j][0].getTime();
+            }
           }
         }
         series[i].marker = {symbol: "circle"};
@@ -590,6 +594,9 @@
   // process data
 
   function sortByTime(a, b) {
+    if (typeof a === 'object'){
+      return a.x.getTime() - b.x.getTime();
+    }
     return a[0].getTime() - b[0].getTime();
   }
 
@@ -614,7 +621,12 @@
       for (j = 0; j < data.length; j++) {
         key = data[j][0];
         key = time ? toDate(key) : (isContinuous ? toFloat(key) : toStr(key));
-        r.push([key, toFloat(data[j][1])]);
+        if (typeof data[j][1] === 'object'){
+          data[j][1].x = key
+          r.push(data[j][1]);
+        }else{
+          r.push([key, toFloat(data[j][1])]);
+        }
       }
       if (time) {
         r.sort(sortByTime);
