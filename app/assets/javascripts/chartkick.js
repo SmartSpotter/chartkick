@@ -56,7 +56,8 @@
         target[key] = eval("(function() {return " + source[key] + ";})()");
       }
       else if (isDateString(source[key])){
-        target[key] = eval(source[key]);
+        var dateString = (source[key].split('(')[1]).split(')')[0];
+        target[key] = toDate(dateString);
       }
       else if (source[key] !== undefined) {
         target[key] = source[key];
