@@ -35,6 +35,10 @@
     return (typeof variable == "string") && variable.substr(0, 8) == "function";
   }
 
+  function isDateString(variable) {
+    return (typeof variable == "string") && variable.substr(0, 10) == "Date.parse";
+  }
+
   // https://github.com/madrobby/zepto/blob/master/src/zepto.js
   function extend(target, source) {
     var key;
@@ -50,6 +54,9 @@
       }
       else if (isFunctionString(source[key])){
         target[key] = eval("(function() {return " + source[key] + ";})()");
+      }
+      else if (isDateString(source[key])){
+        target[key] = eval(source[key]);
       }
       else if (source[key] !== undefined) {
         target[key] = source[key];
