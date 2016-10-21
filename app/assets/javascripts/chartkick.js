@@ -275,19 +275,30 @@
 
         for (j = 0; j < s.data.length; j++) {
           d = s.data[j];
-          if (!rows[d[0]]) {
-            rows[d[0]] = new Array(series.length);
+          if (d.x){
+            if (!rows[d.x]) {
+              rows[d.x] = new Array(series.length);
+            }
+            var v = jQuery.extend(true, {}, d)
+            delete v.x;
+            rows[d.x][i] = v;
+          }else{
+            if (!rows[d[0]]) {
+              rows[d[0]] = new Array(series.length);
+            }
+            rows[d[0]][i] = d[1];
           }
-          rows[d[0]][i] = d[1];
         }
       }
-
+      
       var categories = [];
       for (i in rows) {
         if (rows.hasOwnProperty(i)) {
           categories.push(i);
         }
       }
+
+
       options.xAxis.categories = categories;
 
       var newSeries = [];
@@ -302,6 +313,7 @@
           data: d
         });
       }
+
       options.series = newSeries;
       new Highcharts.Chart(options);
     };
@@ -611,6 +623,7 @@
   function processSeries(series, opts, time) {
     var i, j, data, r, key;
 
+
     // see if one series or multiple
     if (!isArray(series) || typeof series[0] !== "object" || isArray(series[0])) {
       series = [{name: settings.valueLabel, data: series}];
@@ -625,15 +638,20 @@
 
     for (i = 0; i < series.length; i++) {
       data = toArr(series[i].data);
+
       r = [];
       for (j = 0; j < data.length; j++) {
-        key = data[j][0];
-        key = time ? toDate(key) : (isContinuous ? toFloat(key) : toStr(key));
-        if (typeof data[j][1] === 'object'){
-          data[j][1].x = key
-          r.push(data[j][1]);
+        if (data[j].y){
+          r.push(data[j]);
         }else{
-          r.push([key, toFloat(data[j][1])]);
+          key = data[j][0];
+          key = time ? toDate(key) : (isContinuous ? toFloat(key) : toStr(key));
+          if (typeof data[j][1] === 'object'){
+            data[j][1].x = key
+            r.push(data[j][1]);
+          }else{
+            r.push([key, toFloat(data[j][1])]);
+          }
         }
       }
       if (time) {
@@ -641,6 +659,8 @@
       }
       series[i].data = r;
     }
+
+
 
     return series;
   }
