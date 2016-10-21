@@ -275,7 +275,7 @@
 
         for (j = 0; j < s.data.length; j++) {
           d = s.data[j];
-          if (d.x){
+          if (d.x !== undefined){
             if (!rows[d.x]) {
               rows[d.x] = new Array(series.length);
             }
@@ -641,7 +641,7 @@
 
       r = [];
       for (j = 0; j < data.length; j++) {
-        if (data[j].y){
+        if (data[j].y !== undefined){
           r.push(data[j]);
         }else{
           key = data[j][0];
